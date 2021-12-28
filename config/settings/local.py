@@ -1,5 +1,7 @@
+import os
 from .base import *  # noqa
 from .base import env
+
 
 # GENERAL
 # ------------------------------------------------------------------------------
@@ -53,3 +55,5 @@ INSTALLED_APPS += ["django_extensions"]  # noqa F405
 
 # Your stuff...
 # ------------------------------------------------------------------------------
+MEDIA_ROOT =  os.path.join(ROOT_DIR, 'media')
+MEDIA_URL = '/media/'
