@@ -1,3 +1,4 @@
+from django.conf import settings
 from django.db import models
 
 # Create your models here.
@@ -12,6 +13,7 @@ class Game(TimeStampedModel):
     max_players = models.IntegerField("Max number of players")
     description = models.TextField("Description", blank=True)
     img = models.ImageField(upload_to='games/', blank=True)
+    borrower = models.ForeignKey(settings.AUTH_USER_MODEL, blank=True, null=True, on_delete=models.SET_NULL)
 
     def get_absolute_url(self):
         return reverse('games:detail', kwargs={"slug": self.slug})
