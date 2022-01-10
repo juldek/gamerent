@@ -21,6 +21,10 @@
     <img src="{{game.img.url}}" />
   </p>
 {% endif %}
+<hr/>
+{% if game.borrower %}
+  <p>Borrowed by: {{game.borrower}}</p>
+{% endif %}
 
 
 {% endblock content %}
