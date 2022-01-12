@@ -36,15 +36,11 @@ class GameBorrowView(LoginRequiredMixin, View):
     def get(self, request, *args, **kwargs):
         form = self.form_class
         obj = self.get_object()
-        print(request)
-        print(obj)
         return render(request, self.template_name, {'form': form, 'game': obj})
 
     def post(self, request, *args, **kwargs):
         form = self.form_class(request.POST)
         obj = self.get_object()
-        print(request)
-        print(request.user)
         if form.is_valid():
             obj.borrower = request.user
             obj.save()

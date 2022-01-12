@@ -28,7 +28,18 @@
 
 </div>
 <!-- End Action buttons -->
+<hr/>
+
+<div>
+  {% if games %}
+      <p>Games borrowed:</p>
+  {% endif %}
+  {% for game in games %}
+    <li><a href="{% url 'games:detail' game.slug %}">{{game.name}}</a></li>
+  {% endfor %}
+</div>
 {% endif %}
+
 
 </div>
 {% endblock content %}

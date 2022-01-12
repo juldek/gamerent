@@ -24,7 +24,10 @@
 <hr/>
 {% if game.borrower %}
   <p>Borrowed by: {{game.borrower}}</p>
+{% else %}
+  <a href="{% url 'games:borrow' game.slug %}" role="button" class="btn btn-primary">Borrow Game</a>
 {% endif %}
+
 
 
 {% endblock content %}
