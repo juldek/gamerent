@@ -23,7 +23,7 @@ class GameListView(ListView):
 
 
 class GameBorrowView(LoginRequiredMixin, View):
-    template_name = 'games/game_borrow_form.html'
+    template_name = 'games/game_borrow.html'
     form_class = GameBorrowForm
 
     def get_object(self):
@@ -46,3 +46,9 @@ class GameBorrowView(LoginRequiredMixin, View):
             obj.save()
             return HttpResponseRedirect(reverse('games:detail', kwargs={'slug': obj.slug}))
         return render(request, self.template_name, {'form': form})
+
+class GameReturnView(LoginRequiredMixin, ListView):
+    template_name = 'games/game_return.html'
+
+    def get_queryset(self):
+        return Game.objects.filter(borrower=self.request.user)

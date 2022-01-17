@@ -1,0 +1,12 @@
+{% extends "base.html" %}
+{% block title %} Games return {% endblock title %}
+
+{% block content %}
+  <h2> Games to return</h2>
+<ul>
+{% for game in game_list %}
+    <li><a href="{% url 'games:detail' game.slug %}">{{game.name}}</a></li>
+{% endfor %}
+</ul>
+
+{% endblock content %}

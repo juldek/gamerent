@@ -37,6 +37,9 @@
   {% for game in games %}
     <li><a href="{% url 'games:detail' game.slug %}">{{game.name}}</a></li>
   {% endfor %}
+  {% if games %}
+      <a href="{% url 'games:return' %}" role="button" class="btn btn-primary">Return Games</a>
+  {% endif %}
 </div>
 {% endif %}
 
