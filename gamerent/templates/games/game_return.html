@@ -3,10 +3,19 @@
 
 {% block content %}
   <h2> Games to return</h2>
-<ul>
+
+<form method="post">
+    {% csrf_token %}
+  <ul>
 {% for game in game_list %}
-    <li><a href="{% url 'games:detail' game.slug %}">{{game.name}}</a></li>
+    <li>
+      <input type="checkbox" id={{game.name}} name={{game.name}}>
+      <label for={{game.name}}>{{game.name}}</label><br>
+    </li>
 {% endfor %}
-</ul>
+  </ul>
+    <button type="submit" class="btn btn-primary">Return Games</button>
+</form>
+
 
 {% endblock content %}
