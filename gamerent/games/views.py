@@ -40,11 +40,10 @@ class GameBorrowView(LoginRequiredMixin, View):
 
     def post(self, request, *args, **kwargs):
         form = self.form_class(request.POST)
-        obj = self.get_object()
+        game = self.get_object()
         if form.is_valid():
-            obj.borrower = request.user
-            obj.save()
-            return HttpResponseRedirect(reverse('games:detail', kwargs={'slug': obj.slug}))
+            game.borrow(user=request.user)
+            return HttpResponseRedirect(reverse('games:detail', kwargs={'slug': game.slug}))
         return render(request, self.template_name, {'form': form})
 
 
@@ -59,10 +58,6 @@ class GameReturnView(LoginRequiredMixin, ListView):
     def post(self, request, *args, **kwargs):
         form = self.form_class(request.POST)
         if form.is_valid():
-            for key, value in request.POST.items():
-                game = Game.objects.filter(name=key).first()
-                if game and value == 'on':
-                    game.borrower = None
-                    game.save()
+            Game.objects.give_back([key for key, value in request.POST.items() if value == 'on'])
             return HttpResponseRedirect(reverse('games:list'))
         return render(request, self.template_name, {'form': form})

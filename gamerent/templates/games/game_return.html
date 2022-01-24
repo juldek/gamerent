@@ -9,8 +9,8 @@
   <ul>
 {% for game in game_list %}
     <li>
-      <input type="checkbox" id={{game.name}} name={{game.name}}>
-      <label for={{game.name}}>{{game.name}}</label><br>
+      <input type="checkbox" id={{game.slug}} name={{game.slug}}>
+      <label for={{game.slug}}>{{game.name}}</label><br>
     </li>
 {% endfor %}
   </ul>
