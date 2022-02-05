@@ -1,5 +1,7 @@
 from django.http import HttpResponse, JsonResponse
-from django.views.decorators.csrf import csrf_exempt
+from rest_framework import status
+from rest_framework.response import Response
+from rest_framework.decorators import api_view
 from rest_framework.generics import get_object_or_404
 from rest_framework.parsers import JSONParser
 
@@ -7,42 +9,39 @@ from .serializers import GameSerializer
 from .models import Game
 
 
-@csrf_exempt
-def game_list(request):
-    print("here {}".format(request))
-    print(request.method)
-    print(request.POST)
+@api_view(['GET', 'POST'])
+def game_list(request, format=None):
     if request.method == "GET":
         games = Game.objects.all()
         serialized = GameSerializer(games, many=True)
-        return JsonResponse(serialized.data, safe=False)
+        return Response(serialized.data)
 
     elif request.method == "POST":
         data = JSONParser().parse(request)
         serialized = GameSerializer(data=data)
         if serialized.is_valid():
             serialized.save()
-            return JsonResponse(serialized.data, status=201)
-        return JsonResponse(serialized.errors, status=400)
+            return Response(serialized.data, status=status.HTTP_201_CREATED)
+        return Response(serialized.errors, status=status.HTTP_400_BAD_REQUEST)
 
 
-@csrf_exempt
-def game_detail(request, slug):
+@api_view(['GET', 'PUT', 'DELETE'])
+def game_detail(request, slug, format=None):
     game = get_object_or_404(Game, slug=slug)
     if request.method == "GET":
-        return JsonResponse(GameSerializer(game).data)
+        return Response(GameSerializer(game).data)
 
     if request.method == "PUT":
         data = JSONParser().parse(request)
         serialized = GameSerializer(game, data=data)
         if serialized.is_valid():
             serialized.save()
-            return JsonResponse(serialized.data)
-        return JsonResponse(serialized.errors, status=400)
+            return Response(serialized.data)
+        return Response(serialized.errors, status=status.HTTP_400_BAD_REQUEST)
 
     if request.method == "DELETE":
         game.delete()
-        return HttpResponse(status=204)
+        return Response(status=status.HTTP_204_NO_CONTENT)
 
 
 
