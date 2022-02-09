@@ -1,16 +1,50 @@
-from django.http import HttpResponseRedirect
+from django.http import HttpResponseRedirect, HttpResponseForbidden
 from django.shortcuts import render, get_object_or_404
 from django.urls import reverse
-from django.views.generic import DetailView, CreateView, ListView
+from django.views.generic import DetailView, CreateView, ListView, FormView
 from django.contrib.auth.mixins import LoginRequiredMixin
 from django.views.generic.base import View
+from django.views.generic.detail import SingleObjectMixin
 
-from .forms import GameBorrowForm, GameReturnForm
-from .models import Game
+from .forms import GameBorrowForm, GameReturnForm, GameCommentForm
+from .models import Game, GameComment
 
 
 class GameDetailView(DetailView):
     model = Game
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        context['form'] = GameCommentForm()
+        return context
+
+
+class GameCommentFormView(SingleObjectMixin, FormView):
+    template_name = 'games/game_detail.html'
+    form_class = GameCommentForm
+    model = Game
+
+    def post(self, request, *args, **kwargs):
+        if not request.user.is_authenticated:
+            return HttpResponseForbidden()
+        print(request.POST)
+        self.object = self.get_object()
+        self.object.add_comment(request.user, request.POST['header'], request.POST['content'])
+
+        return super().post(request, *args, **kwargs)
+
+    def get_success_url(self):
+        return reverse('games:detail', kwargs={'slug': self.object.slug})
+
+
+class GameView(View):
+    def get(self, request, *args, **kwargs):
+        view = GameDetailView.as_view()
+        return view(request, *args, **kwargs)
+
+    def post(self, request, *args, **kwargs):
+        view = GameCommentFormView.as_view()
+        return view(request, *args, **kwargs)
 
 
 class GameCreateView(LoginRequiredMixin, CreateView):

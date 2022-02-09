@@ -7,6 +7,8 @@ from django.db.models import QuerySet
 from django.urls import reverse
 from model_utils.models import TimeStampedModel
 
+from gamerent.comments.models import AbstractComment
+
 
 class GameQuerySet(QuerySet):
     def borrow(self, user, gamelist):
@@ -39,6 +41,13 @@ class Game(TimeStampedModel):
     def give_back(self):
         self.borrower = None
         self.save()
+
+    def add_comment(self, author, header, content):
+        self.gamecomment_set.create(user=author, header=header, content=content)
+
+
+class GameComment(AbstractComment):
+    resource = models.ForeignKey(Game, on_delete=models.CASCADE)
 
 
 
